@@ -14,15 +14,14 @@ public class PorteriaService {
         return porterias.save(porteria);
     }
 
-    public Porteria findById(String id) {
-        return porterias.findById(id).orElse(null);
-    }
+
 
     public Iterable<Porteria> findAll() {
         return porterias.findAll();
     }
 
     public void deleteById(String id) {
-        porterias.deleteById(id);
+        Porteria porteria = porterias.findById(id).orElseThrow(() -> new RuntimeException("Porteria no encontrada"));
+        porterias.delete(porteria);
     }
 }

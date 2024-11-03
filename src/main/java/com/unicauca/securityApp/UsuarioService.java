@@ -38,7 +38,7 @@ public class UsuarioService {
      String cedula = usuario.getCedula();
 
         String url = microcontrollerUrl + "/receive";
-
+/*
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, cedula, String.class);
 
@@ -51,7 +51,7 @@ public class UsuarioService {
         } catch (Exception e) {
             System.err.println("Error al conectar con el microcontrolador: " + e.getMessage());
         }
-
+*/
 
         }
         public Page<Usuario> obtenerUsuarios(int page, int size) {

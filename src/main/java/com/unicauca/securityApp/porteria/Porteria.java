@@ -11,7 +11,8 @@ import org.springframework.data.annotation.Id;
 @Getter
 @Setter
 public class Porteria {
+
     @Id
-    private Long id;
+    private String id;
     private String nombre;
 }
