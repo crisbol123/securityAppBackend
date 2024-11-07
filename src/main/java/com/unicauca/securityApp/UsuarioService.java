@@ -71,7 +71,6 @@ public class UsuarioService {
                         throw new RuntimeException("El usuario con cédula " + usuario.getCedula() + " no existe");
                 }
                 usuarioRepository.save(usuario);
-
         }
 
 

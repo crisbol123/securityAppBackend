@@ -18,4 +18,9 @@ public class AccesoRestController {
         return accesoService.findByPorteria(porteria);
     }
 
+    @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<Acceso> getAllAccesos() {
+        return accesoService.getAllAccesos();
+    }
 }

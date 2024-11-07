@@ -19,6 +19,9 @@ public class AccesoService {
         return accesosList;
 
     }
+    public List<Acceso> getAllAccesos() {
+        return accesos.findAll();
+    }
 
 
 }

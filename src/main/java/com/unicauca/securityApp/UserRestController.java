@@ -15,7 +15,8 @@ private final UsuarioService usuarioService;
 @PostMapping
 @CrossOrigin(origins = "http://localhost:4200")
     public void guardarUsuario(@RequestBody  Usuario usuario) {
-usuarioService.guardarUsuario( usuario);
+
+    usuarioService.guardarUsuario( usuario);
     }
     @GetMapping
     @CrossOrigin(origins = "http://localhost:4200")
