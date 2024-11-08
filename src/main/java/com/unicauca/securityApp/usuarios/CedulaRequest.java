@@ -1,4 +1,4 @@
-package com.unicauca.securityApp;
+package com.unicauca.securityApp.usuarios;
 
 public class CedulaRequest {
     private String cedula;

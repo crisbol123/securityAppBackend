@@ -1,4 +1,4 @@
-package com.unicauca.securityApp;
+package com.unicauca.securityApp.usuarios;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

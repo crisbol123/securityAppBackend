@@ -1,4 +1,4 @@
-package com.unicauca.securityApp;
+package com.unicauca.securityApp.usuarios;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

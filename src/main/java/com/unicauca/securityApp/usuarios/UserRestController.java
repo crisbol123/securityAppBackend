@@ -1,8 +1,6 @@
-package com.unicauca.securityApp;
+package com.unicauca.securityApp.usuarios;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.mongodb.repository.Update;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

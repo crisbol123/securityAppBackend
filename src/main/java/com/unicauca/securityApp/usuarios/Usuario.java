@@ -1,4 +1,4 @@
-package com.unicauca.securityApp;
+package com.unicauca.securityApp.usuarios;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 @Getter
 @Setter
 public class Usuario {
+    private int in;
     @Id
     private String cedula;
 
