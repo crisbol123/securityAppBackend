@@ -1,5 +1,6 @@
 package com.unicauca.securityApp.usuarios;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,7 @@ public class UsuarioService {
 
         private final UsuarioRepository usuarioRepository;
 
-        // Inyectar la URL desde el archivo de propiedades
-        @Value("${microcontroller.url}")
-        private String microcontrollerUrl;
+        private String microcontrollerUrl = "http://192.168.234.186:80";
 
         // Inyectar RestTemplate
         private final RestTemplate restTemplate;
@@ -32,63 +31,61 @@ public class UsuarioService {
                 this.restTemplate = restTemplate;
         }
 
-        public void guardarUsuario(Usuario usuario){
-            Usuario usuarioExistente = usuarioRepository.findByCedula(usuario.getCedula());
-            if (usuarioExistente != null) {
-                throw new RuntimeException("El usuario con cédula " + usuario.getCedula() + " ya existe");
+    public void guardarUsuario(Usuario usuario) {
+        Usuario usuarioExistente = usuarioRepository.findByCedula(usuario.getCedula());
+        if (usuarioExistente != null) {
+            throw new RuntimeException("El usuario con cédula " + usuario.getCedula() + " ya existe");
+        }
+
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        Set<Integer> valoresOcupados = new HashSet<>();
+        for (Usuario u : usuarios) {
+            valoresOcupados.add(u.getIn());
+        }
+
+        int valorLibre = -1;
+        for (int i = 1; i <= 120; i++) {
+            if (!valoresOcupados.contains(i)) {
+                valorLibre = i;
+                break;
             }
+        }
 
-            List<Usuario> usuarios = usuarioRepository.findAll();
+        if (valorLibre == -1) {
+            throw new RuntimeException("No hay valores libres de `in` disponibles");
+        }
 
-            Set<Integer> valoresOcupados = new HashSet<>();
-            for (Usuario u : usuarios) {
-                valoresOcupados.add(u.getIn());
-            }
+        usuario.setIn(valorLibre);
 
-            int valorLibre = -1;
-            for (int i = 1; i <= 120; i++) {
-                if (!valoresOcupados.contains(i)) {
-                    valorLibre = i;
-                    break;
-                }
-            }
+        String cedula = usuario.getCedula();
+        String url = microcontrollerUrl + "/receive";
 
-            if (valorLibre == -1) {
-                throw new RuntimeException("No hay valores libres de `in` disponibles");
-            }
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("cedula", cedula);
+        payload.put("in", valorLibre);
 
-            usuario.setIn(valorLibre);
-
-
-            String cedula = usuario.getCedula();
-            String url = microcontrollerUrl + "/receive";
-
-
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("cedula", cedula);
-            payload.put("valorLibre", valorLibre);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+            System.out.println("Payload JSON: " + jsonPayload);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
-            try {
-                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    System.out.println("Solicitud POST enviada exitosamente al microcontrolador");
-                    usuarioRepository.save(usuario);
-                } else {
-                    System.err.println("Error al enviar la solicitud POST al microcontrolador");
-
-                }
-            } catch (Exception e) {
-                System.err.println("Error al conectar con el microcontrolador: " + e.getMessage());
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("Solicitud POST enviada exitosamente al microcontrolador");
+                usuarioRepository.save(usuario);
+            } else {
+                System.err.println("Error al enviar la solicitud POST al microcontrolador");
             }
-
-
-
+        } catch (Exception e) {
+            System.err.println("Error al conectar con el microcontrolador: " + e.getMessage());
+            throw new RuntimeException("Error al conectar con el microcontrolador");
         }
+    }
         public Page<Usuario> obtenerUsuarios(int page, int size) {
                 return usuarioRepository.findAll(PageRequest.of(page, size));
         }

@@ -17,7 +17,8 @@ public class PorteriaService {
 
 
     public Iterable<Porteria> findAll() {
-        return porterias.findAll();
+        return
+                porterias.findAll();
     }
 
     public void deleteById(String id) {
